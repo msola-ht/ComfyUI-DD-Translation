@@ -1,10 +1,12 @@
 {   
     "config": "设置",
+    "No bookmarks in current workflow.": "当前工作流中没有书签。",
+    "Workflow Bookmarks (rgthree-comfy)": "工作流书签(RG节点)",
     "Open rgthree-comfy config": "打开 RG节点设置",
     "🎲 Randomize Each Time": "🎲 每次随机",
     "🎲 New Fixed Random": "🎲 生成随机并固定",
     "♻️ (Use Last Queued Seed)": "♻️ 使用上次随机种",
-    "rgthree-comfy": "RG节点",
+    "rgthree-comfy": "⛵RG节点",
     "🛟 Node Help": "🛟 节点说明",
     "Show Label/Title": "显示 标签/标题",
     "Allow Resizing": "允许缩放",
@@ -57,6 +59,12 @@
     "Show quick toggles in Groups' Headers to quickly mute, bypass or queue.": "在分组标题中显示快速开关，用于快速静音、绕过或执行",
     "Detect Corrupt Workflows": "检测损坏的工作流",
     "Will show a message at the top of the screen when loading a workflow that has corrupt linking data.": "当加载具有损坏链接数据的工作流时，将在屏幕顶部显示消息",
+    "Number of items needed to trigger nesting.": "触发嵌套所需的项目数量 ",
+    "Which toggles to show.": "显示哪些切换项 ",
+    "When to show them.": "何时显示",
+    "queue": "队列",
+    "bypass": "绕过",
+    "mute": "禁用",
     "Save": "保存",
     "Close": "关闭"
 }

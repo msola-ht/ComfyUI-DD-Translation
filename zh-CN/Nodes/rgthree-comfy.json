@@ -173,8 +173,11 @@
         }
     },
     "Seed (rgthree)": {
-        "title": "随机种",
+        "title": "随机种子",
         "widgets": {
+            "🎲 Randomize Each Time": "🎲每次随机",
+            "🎲 New Fixed Random": "🎲手动随机",
+            "♻️ (Use Last Queued Seed)": "♻️使用最近一次随机种",
             "seed": "随机种"
         },
         "outputs": {
@@ -427,7 +430,7 @@
     "Fast Actions Button (rgthree)": {
         "title": "操作键",
         "widgets": {
-            "Action!": "🎬 启动!"
+            "🎬 Action!": "🎬启动!"
         }
     },
     "Bookmark (rgthree)": {
@@ -446,6 +449,9 @@
             "OPT_CONNECTION": "可选连接"
         }
     },
+    "Label (rgthree)": {
+        "title": "标签"
+    },
     "Image Comparer (rgthree)": {
         "title": "图像对比",
         "inputs": {
@@ -453,15 +459,91 @@
             "image_b": "图像_B"
         }
     },
+    "Node Combiner (rgthree)": {
+        "title": "节点组合器",
+        "inputs": {
+            "image_a": "图像_A",
+            "image_b": "图像_B"
+        },
+        "outputs": {
+            "Output": "输出",
+            "clip": "CLIP"
+        }
+    },
+    "Power Primitive (rgthree)": {
+        "title": "数量多功能工具",
+        "inputs": {},
+        "widgets": {
+            "value": "值",
+            "type": "类型"
+        },
+        "outputs": {
+            "INT": "整数",
+            "FLOAT": "浮点",
+            "BOOLEAN": "布尔",
+            "STRING": "字符串"
+        }
+    },
+    "Power Puter (rgthree)": {
+        "title": "功率计算器",
+        "inputs": {
+            "outputs": "输出",
+            "STRING": "字符串"
+        },
+        "widgets": {
+            "outputs": "输出",
+            "STRING": "字符串"
+        },
+        "outputs": {
+            "INT": "整数",
+            "FLOAT": "浮点",
+            "BOOLEAN": "布尔",
+            "STRING": "字符串"
+        }
+    },
+    "Image or Latent Size (rgthree)": {
+        "title": "图像或Latent尺寸",
+        "inputs": {
+            "input": "输入"
+        },
+        "widgets": {
+            "STRING": "字符串"
+        },
+        "outputs": {
+            "WIDTH": "宽度",
+            "HEIGHT": "高度"
+        }
+    },
+    "Image Resize (rgthree)": {
+        "title": "图像缩放",
+        "inputs": {
+            "image": "图像"
+        },
+        "widgets": {
+            "measurement": "模式",
+            "width": "宽度",
+            "height": "高度",
+            "fit": "适合",
+            "method": "方法"
+        },
+        "outputs": {
+            "IMAGE": "图像",
+            "WIDTH": "宽度",
+            "HEIGHT": "高度"
+        }
+    },
     "Power Lora Loader (rgthree)": {
-        "title": "强力LoRA加载器",
+        "title": "权重Lora加载器",
         "inputs": {
             "model": "模型",
             "clip": "CLIP"
         },
+        "widgets": {
+            "➕ Add Lora": "➕添加Lora"
+        },
         "outputs": {
             "MODEL": "模型",
-            "CLIP": "CLIP"
+            "clip": "CLIP"
         }
     }
 }

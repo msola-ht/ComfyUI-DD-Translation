@@ -1,29 +1,9 @@
 /**
  * ComfyUI-DD-Translation 工具模块
- * 包含通用功能和工具函数
  */
 
-// 调试模式开关
-export const DEBUG_MODE = false;
-
-// 翻译启用状态的本地存储键
-export const TRANSLATION_ENABLED_KEY = "DD.TranslationEnabled";
-
-// 翻译缓存的本地存储键
-export const TRANSLATION_CACHE_KEY = "DD.TranslationCache";
-
 /**
- * 日志函数 - 仅在调试模式下输出
- * @param  {...any} args 日志参数
- */
-export function log(...args) {
-    if (DEBUG_MODE) {
-        console.log("[DD-Translation]", ...args);
-    }
-}
-
-/**
- * 错误日志函数 - 始终输出
+ * 错误日志函数
  * @param  {...any} args 错误信息参数
  */
 export function error(...args) {
@@ -37,83 +17,186 @@ export function error(...args) {
  */
 export function containsChineseCharacters(text) {
     if (!text) return false;
-    // 匹配中文字符范围
-    const chineseRegex = /[\u4e00-\u9fff\uf900-\ufaff]/;
+    const chineseRegex = /[\u4e00-\u9fff\uf900-\ufaff\u3000-\u303f]/;
     return chineseRegex.test(text);
 }
 
 /**
- * 不需要翻译的设置项列表 - 这些项目已在原生ComfyUI中翻译
+ * 检查文本是否看起来已经被翻译过
+ * @param {string} originalName 原始英文名称
+ * @param {string} currentLabel 当前显示标签
+ * @returns {boolean} 是否已被翻译
+ */
+export function isAlreadyTranslated(originalName, currentLabel) {
+    if (!originalName || !currentLabel) return false;
+    
+    if (currentLabel !== originalName && containsChineseCharacters(currentLabel)) {
+        return true;
+    }
+    
+    if (currentLabel !== originalName && 
+        currentLabel !== originalName.toLowerCase() &&
+        currentLabel !== originalName.toUpperCase()) {
+        return true;
+    }
+    
+    return false;
+}
+
+/**
+ * 检查对象是否有原生翻译
+ * @param {Object} obj 要检查的对象
+ * @param {string} property 要检查的属性名
+ * @param {string} [originalValue] 原始值（用于更精确的检查）
+ * @returns {boolean} 是否有原生翻译
+ */
+export function hasNativeTranslation(obj, property, originalValue = null) {
+    if (!obj || !obj[property]) return false;
+    
+    // 如果包含中文字符，认为是原生翻译
+    if (containsChineseCharacters(obj[property])) {
+        return true;
+    }
+    
+    // 如果提供了原始值，检查是否已经被修改
+    if (originalValue && obj[property] !== originalValue) {
+        return true;
+    }
+    
+    return false;
+}
+
+/**
+ * 不需要翻译的设置项列表
  */
 export const nativeTranslatedSettings = [
     "Comfy", "画面", "外观", "3D", "遮罩编辑器",
 ];
 
+// 存储当前翻译状态
+let currentTranslationEnabled = true;
+
+/**
+ * 从配置文件获取翻译状态
+ */
+async function loadConfig() {
+    try {
+        const response = await fetch("./agl/get_config");
+        if (response.ok) {
+            const config = await response.json();
+            currentTranslationEnabled = config.translation_enabled;
+            return config.translation_enabled;
+        }
+    } catch (e) {
+        error("获取配置失败:", e);
+    }
+    return true;
+}
+
+/**
+ * 保存翻译状态到配置文件
+ */
+async function saveConfig(enabled) {
+    try {
+        const formData = new FormData();
+        formData.append('translation_enabled', enabled.toString());
+
+        const response = await fetch("./agl/set_config", {
+            method: "POST",
+            body: formData
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                currentTranslationEnabled = enabled;
+                return true;
+            }
+        }
+    } catch (e) {
+        error("保存配置失败:", e);
+    }
+    return false;
+}
+
 /**
  * 检查翻译是否启用
- * @returns {boolean} 翻译是否启用
  */
 export function isTranslationEnabled() {
-    // 如果没有设置过，默认启用翻译
-    return localStorage.getItem(TRANSLATION_ENABLED_KEY) !== "false";
+    return currentTranslationEnabled;
+}
+
+/**
+ * 初始化配置
+ */
+export async function initConfig() {
+    await loadConfig();
 }
 
 /**
  * 切换翻译状态
  */
-export function toggleTranslation() {
-    const enabled = isTranslationEnabled();
-    localStorage.setItem(TRANSLATION_ENABLED_KEY, enabled ? "false" : "true");
-    setTimeout(() => {
-        location.reload();
-    }, 500);
-}
-
-/**
- * 性能计时开始
- * @returns {number} 开始时间戳
- */
-export function startPerformanceTimer() {
-    return performance.now();
-}
-
-/**
- * 性能计时结束并输出耗时
- * @param {string} operation 操作名称
- * @param {number} startTime 开始时间戳
- */
-export function endPerformanceTimer(operation, startTime) {
-    if (!startTime) return;
-    const duration = performance.now() - startTime;
-    log(`${operation} 耗时: ${duration.toFixed(2)}ms`);
-}
-
-/**
- * 从缓存获取翻译
- * @param {string} key 翻译键
- * @returns {string|null} 缓存的翻译或null
- */
-export function getCachedTranslation(key) {
-    try {
-        const cachedTranslations = JSON.parse(localStorage.getItem(TRANSLATION_CACHE_KEY) || '{}');
-        return cachedTranslations[key] || null;
-    } catch (e) {
-        error("读取翻译缓存出错:", e);
-        return null;
+export async function toggleTranslation() {
+    const newEnabled = !currentTranslationEnabled;
+    const success = await saveConfig(newEnabled);
+    if (success) {
+        setTimeout(() => location.reload(), 100);
+    } else {
+        error("切换翻译状态失败");
     }
 }
 
 /**
- * 将翻译存入缓存
- * @param {string} key 翻译键
- * @param {string} value 翻译值
+ * Check if running in ComfyUI Nodes 2.0 (Vue) mode
+ * @returns {boolean}
  */
-export function setCachedTranslation(key, value) {
+export function isVueNodes2() {
+    return typeof window.comfyAPI !== 'undefined';
+}
+export function applySuffixHeuristic(key) {
+    if (!key || typeof key !== 'string') return null;
+    const idx = key.lastIndexOf('_');
+    if (idx <= 0) return null;
+    const base = key.slice(0, idx);
+    const suffix = key.slice(idx + 1);
+    if (suffix === 'embeds') return `${base}嵌入`;
+    if (suffix === 'args') return `${base}参数`;
+    return null;
+}
+
+export function shouldSkipNode(node, extraClassList = [], extraClosestSelectors = '') {
     try {
-        const cachedTranslations = JSON.parse(localStorage.getItem(TRANSLATION_CACHE_KEY) || '{}');
-        cachedTranslations[key] = value;
-        localStorage.setItem(TRANSLATION_CACHE_KEY, JSON.stringify(cachedTranslations));
+        if (!node) return true;
+        if (extraClassList.some(cls => node.classList?.contains(cls))) return true;
+        const container = node.closest?.(extraClosestSelectors || '.workflow-list, .workflow, .workflows, .file-list, .file-browser, .p-tree, .p-treenode, .p-inputtext, .lite-search, .lite-searchbox, .litegraph-searchbox');
+        if (container) return true;
+        if (node.tagName === 'INPUT' || node.tagName === 'TEXTAREA' || node.isContentEditable) return true;
+        return false;
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * 创建观察者（可配置）
+ * @param {HTMLElement} observeTarget
+ * @param {Function} fn
+ * @param {boolean} subtree
+ * @param {Object} options
+ * @returns {MutationObserver|null}
+ */
+export function observeFactory(observeTarget, fn, subtree = false, options = {}) {
+    if (!observeTarget) return null;
+    try {
+        const observer = new MutationObserver(function (mutationsList, observer) {
+            fn(mutationsList, observer);
+        });
+        const defaultOpts = { childList: true, attributes: true, subtree, characterData: false };
+        const observeOptions = Object.assign(defaultOpts, options || {});
+        observer.observe(observeTarget, observeOptions);
+        return observer;
     } catch (e) {
-        error("保存翻译缓存出错:", e);
+        error("创建观察者出错:", e);
+        return null;
     }
 }

@@ -263,5 +263,34 @@
     "PonsTranslator [free - word(s) only]": "Pons [免费-仅字词]",
     "QcriTranslator [api-key]": "QCRI [API]",
     "QcriTranslator [free or api_key]": "QCRI [免费或API]",
-    "YandexTranslator [api-key]": "Yandex [API]"
+    "YandexTranslator [api-key]": "Yandex [API]",
+
+    "alekpet": "🔧AlekPet工具包",
+    "ExtrasNode": "扩展节点",
+    "Enabled:": "已启用",
+    "(Then reload the page)": "（然后重新加载页面）",
+    "🔸 Speak text & Recognition speech": "🔸语音朗读与语音识别",
+    "Output Save as?": "输出保存为？",
+    "Speech settings": "语音设置",
+    "Select voice:": "选择语音：",
+    "Volume:": "音量：",
+    "Rate:": "语速：",
+    "Pitch:": "音调：",
+    "Reset to default": "重置为默认值",
+    "Test speech": "测试语音",
+    "🔸 Preview images and videos in the list": "🔸在列表中预览图像和视频",
+    "Display image size:": "显示图像尺寸",
+    "Color text:": "文本颜色",
+    "Color background:": "背景颜色",
+    "Reset colors": "重置颜色",
+    "🔸 Preview Image Size": "🔸预览图像尺寸",
+
+    "面板工具": "面板工具",
+    "🔸 Save settings to JSON file (BETA)": "🔸保存设置到JSON文件（测试版）",
+    "🔸 Managing JSON data storage": "🔸管理JSON数据存储",
+    "Managing Data": "管理数据",
+
+    "JSON storage data": "JSON存储数据",
+    "Refresh": "刷新",
+    "Records is not found!": "未找到记录！"
 }
